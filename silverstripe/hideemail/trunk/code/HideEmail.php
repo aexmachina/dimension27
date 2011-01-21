@@ -18,6 +18,7 @@
  * see how mailto/ maps to this class.
  */
 class HideEmail_Controller extends ContentController {
+
 	/**
 	 * The list of allowed domains to create a mailto: link to. By default, allow
 	 * all domains.
@@ -95,8 +96,8 @@ class HideEmail {
 
 	static function obfuscateEmails( $content ) {
 		$search = array(
-				'/<a (.*)href=([\'"])\s*mailto:\s*(\S+)@(\S+)([\'"])(.*)>(.*)<\/a>/siUe', // (\?[^\'"]*subject=([^&]+))?
-				'/[^>]+@\S+/e'
+				'/<a ([^>]*)href=([\'"])\s*mailto:\s*(\S+)@(\S+)([\'"])([^>]*)>([^>]*)<\/a>/siUe', // (\?[^\'"]*subject=([^&]+))?
+				'/[^"\'<>]+@[^"\'<>]+/e'
 		);
 		$replace = array(
 				'"<script>document.write(deobfuscate(".HideEmail::obfuscate("$0")."))</script>'."\n"
@@ -118,7 +119,7 @@ EOB;
 	}
 
 	static function obfuscate( $str ) {
-		$offset = rand(100, 999);
+		$offset = rand(0, 9);
 		$rv = array($offset);
 		for( $i = 0; $i < strlen($str); $i++ ) {
 			$rv[] = ord($str[$i]) + $offset;
