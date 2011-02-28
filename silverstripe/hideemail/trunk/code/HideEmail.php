@@ -22,10 +22,8 @@ class HideEmail_Controller extends ContentController {
 	/**
 	 * The list of allowed domains to create a mailto: link to. By default, allow
 	 * all domains.
-	 *
-	 * TODO Maybe the default should be to allow the current domain only?
 	 */
-	static $allowed_domains = '*';
+	static $allowed_domains = null;
 
 	/**
 	 * @param mixed $domains Either an array of domains to allow, or the string
@@ -33,6 +31,13 @@ class HideEmail_Controller extends ContentController {
 	 */
 	static function set_allowed_domains($domains) {
 		self::$allowed_domains = $domains;
+	}
+
+	static function get_allowed_domains() {
+		if( !self::$allowed_domains ) {
+			self::$allowed_domains = array(preg_replace('/^www/', '', $_SERVER['HTTP_HOST']));
+		}
+		return self::$allowed_domains;
 	}
 
 	/**
@@ -57,7 +62,8 @@ class HideEmail_Controller extends ContentController {
 		}
 
 		// Make sure the domain is in the allowed domains
-		if((is_string(self::$allowed_domains) && self::$allowed_domains == '*') || in_array($domain, self::$allowed_domains)) {
+		self::get_allowed_domains();
+		if( (self::$allowed_domains == '*') || in_array($domain, self::$allowed_domains) ) {
 			if( !$subject ) {
 				$subject = $request->requestVar('subject');
 			}
@@ -129,7 +135,7 @@ EOB;
 	}
 
 	static function replaceEmails( $str ) {
-		return preg_replace('/\S+\@\S+/', '[email hidden]', $str);
+		return preg_replace('/\S+\@\S+/', '[click to email]', $str);
 	}
 
 	private function __construct() {}
