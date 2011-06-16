@@ -144,13 +144,16 @@ EOB;
 
 class HideEmail_SiteTreeDecorator extends SiteTreeDecorator {
 
-	function Content() {
-		$content = $this->owner->getField('Content');
-		return HideEmail::obfuscateEmails($content);
-	}
-
 	function onAfterPublish( $original ) {
 		HideEmail::$jsAdded = false;
+	}
+
+}
+class HideEmail_ControllerDecorator extends Extension {
+
+	function getContent() {
+		$content = $this->owner->data()->Content;
+		return HideEmail::obfuscateEmails($content);
 	}
 
 }
