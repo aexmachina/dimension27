@@ -18,7 +18,6 @@ Object::add_extension('Member', 'HideEmail_Role');
 /*
  * You can comment out/remove this line if you don't want to hide emails in content.
  */
-Object::add_extension('SiteTree', 'HideEmail_SiteTreeDecorator');
 Object::add_extension('ContentController', 'HideEmail_ControllerDecorator');
 
 /*
